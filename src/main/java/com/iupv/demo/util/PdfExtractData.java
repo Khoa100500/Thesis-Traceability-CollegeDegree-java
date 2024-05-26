@@ -1,65 +1,127 @@
 package com.iupv.demo.util;
+
 import com.spire.pdf.PdfDocument;
 import com.spire.pdf.PdfPageBase;
 import com.spire.pdf.texts.PdfTextExtractOptions;
 import com.spire.pdf.texts.PdfTextExtractor;
 import com.spire.pdf.utilities.PdfTable;
 import com.spire.pdf.utilities.PdfTableExtractor;
+import org.springframework.stereotype.Component;
 
 import java.awt.geom.Rectangle2D;
+import java.util.LinkedList;
+import java.util.List;
 
-
+//"src/main/java/com/iupv/demo/util/Resources/KetQuaNhapDiem (18).pdf"
+@Component
 public class PdfExtractData {
 
-    public static void main(String[] args) {
 
-        //Load a sample PDF document
-        PdfDocument pdf = new PdfDocument("src/main/java/com/iupv/demo/util/Resources/KetQuaNhapDiem (18).pdf");
+    private Integer StringToInt(String text) {
+        try {
+            return Integer.parseInt(text);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
 
+    private String removeAllSpaces(String input) {
+        return input.replace(" ", "");
+    }
+
+    private String removeExtraSpaces(String text) {
+        return text.trim().replaceAll(" +", " ");
+    }
+
+    public List<StudentScoresDto> extractStudentScores(PdfDocument pdfDocument) {
         //Create a PdfTableExtractor instance
-        PdfTableExtractor extractor = new PdfTableExtractor(pdf);
+        PdfTableExtractor extractor = new PdfTableExtractor(pdfDocument);
+        int numberOfPages = pdfDocument.getPages().getCount();
+        List<StudentScoresDto> list = new LinkedList<>();
 
-        //Extract tables from the first page
-        PdfTable[] pdfTables  = extractor.extractTable(0);
+        for (int i = 0; i < numberOfPages; i++) {
 
+//          Extract tables from the every pages
+            PdfTable[] pdfTables = extractor.extractTable(i);
 
-        //If any tables are found
-        if (pdfTables != null && pdfTables.length > 0) {
+            //If any tables are found
+            if (pdfTables != null) {
 
-            //Loop through the tables
-            for (int tableNum = 0; tableNum < pdfTables.length; tableNum++) {
-                //Loop through the rows in the current table
-                for (int rowNum = 0; rowNum < pdfTables[tableNum].getRowCount(); rowNum++) {
-                    //Loop through the columns in the current table
-                    for (int colNum = 0; colNum < pdfTables[tableNum].getColumnCount(); colNum++) {
+                //Loop through the tables
+                for (PdfTable pdfTable : pdfTables) {
 
-                        //Extract data from the current table cell
-                        String text = pdfTables[tableNum].getText(rowNum, colNum);
-                        System.out.print(text + "   ");
+                    //Loop through the rows in the current table
+                    for (int rowNum = 1; rowNum < pdfTable.getRowCount(); rowNum++) {
+                        String[] data = new String[pdfTable.getColumnCount() - 1];
+
+                        //Loop through the columns in the current table
+                        for (int colNum = 1; colNum < pdfTable.getColumnCount(); colNum++) {
+
+                            //Extract data from the current table cell
+                            String text = pdfTable.getText(rowNum, colNum);
+                            if (text == null || text.isEmpty()) {
+                                data[colNum - 1] = "No info";
+                            } else {
+                                data[colNum - 1] = text;
+                            }
+
+                        }
+                        StudentScoresDto s = new StudentScoresDto(data[0], data[1], data[2], data[3],
+                                StringToInt(data[4]), StringToInt(data[5]), StringToInt(data[6]), data[7]);
+                        list.add(s);
                     }
-                    System.out.println();
                 }
             }
         }
-        PdfPageBase page = pdf.getPages().get(0);
+        return list;
+    }
+
+
+    private PdfTextExtractOptions createExtractOptions(Rectangle2D options) {
+        PdfTextExtractOptions option = new PdfTextExtractOptions();
+        option.setExtractArea(options);
+        return option;
+    }
+
+    private String extractAfterColon(String input) {
+        String delimiter = ": ";
+        int index = input.indexOf(delimiter);
+        if (index != -1) {
+            return input.substring(index + delimiter.length());
+        }
+        return "";
+    }
+
+    private String extractText(PdfPageBase page, Rectangle2D options) {
         PdfTextExtractor textExtractor = new PdfTextExtractor(page);
-        PdfTextExtractOptions extractOptions1 = new PdfTextExtractOptions();
-        PdfTextExtractOptions extractOptions2 = new PdfTextExtractOptions();
-        PdfTextExtractOptions extractOptions3 = new PdfTextExtractOptions();
-        PdfTextExtractOptions extractOptions4 = new PdfTextExtractOptions();
-        PdfTextExtractOptions extractOptions5 = new PdfTextExtractOptions();
-        extractOptions1.setExtractArea(new Rectangle2D.Float(42f, 79.7f, 325.9f, 13.4f));
-        extractOptions2.setExtractArea(new Rectangle2D.Float(42f, 94.1f, 325.9f, 13.4f));
-        extractOptions3.setExtractArea(new Rectangle2D.Float(42f, 108.5f, 325.9f, 13.4f));
-        extractOptions4.setExtractArea(new Rectangle2D.Float(394.2f, 94.1f, 325.9f, 13.4f));
-        extractOptions5.setExtractArea(new Rectangle2D.Float(394.2f, 108.5f, 325.9f, 13.4f));
-        System.out.println(textExtractor.extract(extractOptions1));
-        System.out.println(textExtractor.extract(extractOptions2));
-        System.out.println(textExtractor.extract(extractOptions3));
-        System.out.println(textExtractor.extract(extractOptions4));
-        System.out.println(textExtractor.extract(extractOptions5));
+        String text = removeExtraSpaces(textExtractor.extract(createExtractOptions(options)));
+
+        return extractAfterColon(text);
+    }
+
+    private String[] splitByWord(String input) {
+        return input.split("nhóm");
+    }
 
 
+    public PdfHeadersDto extractHeaders(PdfDocument pdfDocument) {
 
+        PdfPageBase page = pdfDocument.getPages().get(0);
+        Rectangle2D[] options = {new Rectangle2D.Float(42f, 79.7f, 325.9f, 13.4f),
+                new Rectangle2D.Float(42f, 94.1f, 325.9f, 13.4f),
+                new Rectangle2D.Float(42f, 108.5f, 325.9f, 13.4f),
+                new Rectangle2D.Float(394.2f, 94.1f, 325.9f, 13.4f),
+                new Rectangle2D.Float(394.2f, 108.5f, 325.9f, 13.4f)
+        };
+
+        String courseName = extractText(page, options[0]);
+        String[] courseIdGroup = splitByWord(extractText(page, options[1]));
+        String lecturerName = extractText(page, options[2]);
+        String lecturerID = extractText(page, options[3]);
+        String hpUnit = extractText(page, options[4]);
+        String courseId = removeAllSpaces(courseIdGroup[0]);
+        String group = removeAllSpaces( courseIdGroup[1]);
+
+        return new PdfHeadersDto(courseName, courseId, group, lecturerName, lecturerID, hpUnit);
     }
 }

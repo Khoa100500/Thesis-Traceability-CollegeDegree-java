@@ -1,14 +1,17 @@
 package com.iupv.demo.auth;
 
-import com.iupv.demo.User.User;
 import com.iupv.demo.User.UserRepository;
+import com.iupv.demo.util.PdfExtractData;
+import com.iupv.demo.util.PdfHeadersDto;
+import com.spire.pdf.PdfDocument;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Controller
 @RequestMapping("/api/v1/auth")
@@ -16,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
-    private final UserRepository userRepository;
+    private final PdfExtractData pdfExtractData;
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
@@ -32,8 +35,10 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }
 
-    @GetMapping("/user")
-    public ResponseEntity<User> getUserInfo() {
-        return ResponseEntity.ok((userRepository.findByUsername("tung123").orElseThrow()));
+    @PostMapping(value = "/pdf", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PdfHeadersDto> extractPdfHeaders(@RequestPart(value = "file") MultipartFile file) throws IOException {
+        PdfDocument pdfDocument = new PdfDocument(file.getInputStream());
+        System.out.println(pdfExtractData.extractHeaders(pdfDocument));
+        return ResponseEntity.ok(pdfExtractData.extractHeaders(pdfDocument));
     }
 }

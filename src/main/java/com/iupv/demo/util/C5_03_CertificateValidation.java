@@ -1,13 +1,8 @@
 package com.iupv.demo.util;
 
-
-
-import com.itextpdf.bouncycastle.cert.ocsp.BasicOCSPRespBC;
-import com.itextpdf.commons.bouncycastle.cert.ocsp.IBasicOCSPResp;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.signatures.*;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -39,8 +34,7 @@ public class C5_03_CertificateValidation {
         }
     }
 
-    public void verifySignature(SignatureUtil signUtil, String name) throws GeneralSecurityException,
-            IOException {
+    public void verifySignature(SignatureUtil signUtil, String name) throws GeneralSecurityException {
         PdfPKCS7 pkcs7 = getSignatureData(signUtil, name);
         Certificate[] certs = pkcs7.getSignCertificateChain();
 
@@ -74,13 +68,6 @@ public class C5_03_CertificateValidation {
 
         // Take the certificate of the issuer of that certificate (or null if it was self-signed).
         X509Certificate issuerCert = (certs.length > 1 ? (X509Certificate) certs[1] : null);
-
-        OUT_STREAM.println("=== Checking validity of the document at the time of signing ===");
-        checkRevocation(pkcs7, signCert, issuerCert, cal.getTime());
-
-        OUT_STREAM.println("=== Checking validity of the document today ===");
-        checkRevocation(pkcs7, signCert, issuerCert, new Date());
-
     }
 
     public PdfPKCS7 getSignatureData(SignatureUtil signUtil, String name) throws GeneralSecurityException {
@@ -122,39 +109,6 @@ public class C5_03_CertificateValidation {
         }
     }
 
-    public static void checkRevocation(PdfPKCS7 pkcs7, X509Certificate signCert, X509Certificate issuerCert, Date date)
-            throws GeneralSecurityException, IOException {
-        List<IBasicOCSPResp> ocsps = new ArrayList<>();
-        if (pkcs7.getOcsp() != null) {
-            ocsps.add(new BasicOCSPRespBC(((BasicOCSPRespBC) pkcs7.getOcsp()).getBasicOCSPResp()));
-        }
-
-        // Check if the OCSP responses in the list were valid for the certificate on a specific date.
-        OCSPVerifier ocspVerifier = new OCSPVerifier(null, ocsps);
-        List<VerificationOK> verification = ocspVerifier.verify(signCert, issuerCert, date);
-
-        // If that list is empty, we can't verify using OCSP, and we need to look for CRLs.
-        if (verification.isEmpty()) {
-            List<X509CRL> crls = new ArrayList<>();
-            if (pkcs7.getCRLs() != null) {
-                for (CRL crl : pkcs7.getCRLs()) {
-                    crls.add((X509CRL) crl);
-                }
-            }
-
-            // Check if the CRLs in the list were valid on a specific date.
-            CRLVerifier crlVerifier = new CRLVerifier(null, crls);
-            verification.addAll(crlVerifier.verify(signCert, issuerCert, date));
-        }
-
-        if (verification.isEmpty()) {
-            OUT_STREAM.println("The signing certificate couldn't be verified");
-        } else {
-            for (VerificationOK v : verification) {
-                OUT_STREAM.println(v);
-            }
-        }
-    }
 
     public static void main(String[] args) throws IOException, GeneralSecurityException {
 
