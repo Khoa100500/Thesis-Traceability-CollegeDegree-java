@@ -1,14 +1,13 @@
 package com.iupv.demo;
 
-import com.iupv.demo.User.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.security.Security;
 import java.util.List;
 
 @SpringBootApplication
@@ -24,7 +23,7 @@ public class DemoApplication implements CommandLineRunner{
 
     @Override
     public void run(String... args) throws Exception {
-        String password = passwordEncoder.encode("Khoa");
-        System.out.println(password);
+        BouncyCastleProvider provider = new BouncyCastleProvider();
+        Security.addProvider(provider);
     }
 }

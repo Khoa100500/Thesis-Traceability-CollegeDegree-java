@@ -2,11 +2,9 @@ import axios from "axios";
 import Nav from "../Nav";
 import { useState } from "react";
 import { FormData } from "formdata-node";
-import { useNavigate } from "react-router-dom";
 
 export default function Home() {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const navigate = useNavigate();
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files) return;
@@ -25,7 +23,7 @@ export default function Home() {
             })
             .then((response) => {
                 // handle the response
-                navigate("/home/dashboard", { state: { response } });
+                console.log(response)
             })
             .catch((error) => {
                 // handle errors

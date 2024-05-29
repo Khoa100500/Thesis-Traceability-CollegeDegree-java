@@ -1,17 +1,17 @@
 package com.iupv.demo.auth;
 
-import com.iupv.demo.User.UserRepository;
-import com.iupv.demo.util.PdfExtractData;
-import com.iupv.demo.util.PdfHeadersDto;
-import com.spire.pdf.PdfDocument;
+import com.iupv.demo.report.ReportDto;
+import com.iupv.demo.util.*;
+import com.iupv.demo.util.Resources.dtos.*;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 @Controller
 @RequestMapping("/api/v1/auth")
@@ -19,7 +19,8 @@ import java.io.IOException;
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
-    private final PdfExtractData pdfExtractData;
+    private final PdfDataService pdfDataService;
+
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
@@ -36,9 +37,7 @@ public class AuthenticationController {
     }
 
     @PostMapping(value = "/pdf", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PdfHeadersDto> extractPdfHeaders(@RequestPart(value = "file") MultipartFile file) throws IOException {
-        PdfDocument pdfDocument = new PdfDocument(file.getInputStream());
-        System.out.println(pdfExtractData.extractHeaders(pdfDocument));
-        return ResponseEntity.ok(pdfExtractData.extractHeaders(pdfDocument));
+    public ResponseEntity<AllData> extractPdfData(@RequestPart(value = "file") MultipartFile file) {
+        return ResponseEntity.ok(pdfDataService.getAllPdfData(file));
     }
 }

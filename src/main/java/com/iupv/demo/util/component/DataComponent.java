@@ -1,5 +1,7 @@
-package com.iupv.demo.util;
+package com.iupv.demo.util.component;
 
+import com.iupv.demo.util.Resources.dtos.PdfHeaders;
+import com.iupv.demo.util.Resources.dtos.StudentScores;
 import com.spire.pdf.PdfDocument;
 import com.spire.pdf.PdfPageBase;
 import com.spire.pdf.texts.PdfTextExtractOptions;
@@ -9,12 +11,14 @@ import com.spire.pdf.utilities.PdfTableExtractor;
 import org.springframework.stereotype.Component;
 
 import java.awt.geom.Rectangle2D;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 
 //"src/main/java/com/iupv/demo/util/Resources/KetQuaNhapDiem (18).pdf"
 @Component
-public class PdfExtractData {
+public class DataComponent {
 
 
     private Integer StringToInt(String text) {
@@ -33,11 +37,11 @@ public class PdfExtractData {
         return text.trim().replaceAll(" +", " ");
     }
 
-    public List<StudentScoresDto> extractStudentScores(PdfDocument pdfDocument) {
+    public List<StudentScores> extractStudentScores(PdfDocument pdfDocument) {
         //Create a PdfTableExtractor instance
         PdfTableExtractor extractor = new PdfTableExtractor(pdfDocument);
         int numberOfPages = pdfDocument.getPages().getCount();
-        List<StudentScoresDto> list = new LinkedList<>();
+        List<StudentScores> list = new LinkedList<>();
 
         for (int i = 0; i < numberOfPages; i++) {
 
@@ -66,7 +70,8 @@ public class PdfExtractData {
                             }
 
                         }
-                        StudentScoresDto s = new StudentScoresDto(data[0], data[1], data[2], data[3],
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                        StudentScores s = new StudentScores(data[0], data[1], LocalDate.parse(data[2], formatter), data[3],
                                 StringToInt(data[4]), StringToInt(data[5]), StringToInt(data[6]), data[7]);
                         list.add(s);
                     }
@@ -104,7 +109,7 @@ public class PdfExtractData {
     }
 
 
-    public PdfHeadersDto extractHeaders(PdfDocument pdfDocument) {
+    public PdfHeaders extractHeaders(PdfDocument pdfDocument) {
 
         PdfPageBase page = pdfDocument.getPages().get(0);
         Rectangle2D[] options = {new Rectangle2D.Float(42f, 79.7f, 325.9f, 13.4f),
@@ -122,6 +127,6 @@ public class PdfExtractData {
         String courseId = removeAllSpaces(courseIdGroup[0]);
         String group = removeAllSpaces( courseIdGroup[1]);
 
-        return new PdfHeadersDto(courseName, courseId, group, lecturerName, lecturerID, hpUnit);
+        return new PdfHeaders(courseName, courseId, group, lecturerName, lecturerID, hpUnit);
     }
 }
