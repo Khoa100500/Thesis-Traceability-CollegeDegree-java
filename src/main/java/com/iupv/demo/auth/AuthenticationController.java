@@ -1,14 +1,11 @@
 package com.iupv.demo.auth;
 
+import com.iupv.demo.report.Report;
 import com.iupv.demo.report.ReportDto;
 import com.iupv.demo.util.*;
-import com.iupv.demo.util.Resources.dtos.*;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,8 +33,14 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }
 
+
     @PostMapping(value = "/pdf", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AllData> extractPdfData(@RequestPart(value = "file") MultipartFile file) {
-        return ResponseEntity.ok(pdfDataService.getAllPdfData(file));
+    public ResponseEntity<Integer> postReport(@RequestPart(value = "file") MultipartFile file) {
+        return ResponseEntity.ok(pdfDataService.uploadReport(1, file));
+    }
+
+    @GetMapping("/pdf/{id}")
+    public ResponseEntity<ReportDto> getReport(@PathVariable Integer id) {
+        return ResponseEntity.ok(pdfDataService.findReportById(id));
     }
 }

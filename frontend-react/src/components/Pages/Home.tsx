@@ -2,33 +2,29 @@ import axios from "axios";
 import Nav from "../Nav";
 import { useState } from "react";
 import { FormData } from "formdata-node";
+import { useMutation } from "@tanstack/react-query";
 
 export default function Home() {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files) return;
         setSelectedFile(e.target.files[0]);
     };
 
-    const handleUpload = () => {
+    const handleUpload = async (file: File | null) => {
         const formData = new FormData();
-        formData.append("file", selectedFile);
+        formData.append("file", file);
         // make a POST request to the File Upload API with the FormData object and Rapid API headers
-        axios
-            .post("/api/v1/auth/pdf", formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-            })
-            .then((response) => {
-                // handle the response
-                console.log(response)
-            })
-            .catch((error) => {
-                // handle errors
-                console.log(error);
-            });
+        return await axios.post("/api/v1/auth/pdf", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+    };
+
+    const mutation = useMutation({ mutationFn: handleUpload });
+    const onClick = () => {
+        mutation.mutate(selectedFile);
     };
 
     return (
@@ -52,7 +48,7 @@ export default function Home() {
                                     className="btn btn-outline-secondary"
                                     type="button"
                                     id="inputGroupFileAddon04"
-                                    onClick={handleUpload}
+                                    onClick={onClick}
                                 >
                                     Upload
                                 </button>

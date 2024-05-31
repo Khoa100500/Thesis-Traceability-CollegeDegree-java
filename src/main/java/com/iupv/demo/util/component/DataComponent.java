@@ -1,7 +1,7 @@
 package com.iupv.demo.util.component;
 
-import com.iupv.demo.util.Resources.dtos.PdfHeaders;
-import com.iupv.demo.util.Resources.dtos.StudentScores;
+import com.iupv.demo.report.PdfHeadersDto;
+import com.iupv.demo.score.StudentScoreDto;
 import com.spire.pdf.PdfDocument;
 import com.spire.pdf.PdfPageBase;
 import com.spire.pdf.texts.PdfTextExtractOptions;
@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 import java.awt.geom.Rectangle2D;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 //"src/main/java/com/iupv/demo/util/Resources/KetQuaNhapDiem (18).pdf"
 @Component
@@ -37,11 +37,11 @@ public class DataComponent {
         return text.trim().replaceAll(" +", " ");
     }
 
-    public List<StudentScores> extractStudentScores(PdfDocument pdfDocument) {
+    public Set<StudentScoreDto> extractStudentScores(PdfDocument pdfDocument) {
         //Create a PdfTableExtractor instance
         PdfTableExtractor extractor = new PdfTableExtractor(pdfDocument);
         int numberOfPages = pdfDocument.getPages().getCount();
-        List<StudentScores> list = new LinkedList<>();
+        Set<StudentScoreDto> set = new HashSet<>();
 
         for (int i = 0; i < numberOfPages; i++) {
 
@@ -71,14 +71,14 @@ public class DataComponent {
 
                         }
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                        StudentScores s = new StudentScores(data[0], data[1], LocalDate.parse(data[2], formatter), data[3],
+                        StudentScoreDto s = new StudentScoreDto(data[0], data[1], LocalDate.parse(data[2], formatter), data[3],
                                 StringToInt(data[4]), StringToInt(data[5]), StringToInt(data[6]), data[7]);
-                        list.add(s);
+                        set.add(s);
                     }
                 }
             }
         }
-        return list;
+        return set;
     }
 
 
@@ -109,7 +109,7 @@ public class DataComponent {
     }
 
 
-    public PdfHeaders extractHeaders(PdfDocument pdfDocument) {
+    public PdfHeadersDto extractHeaders(PdfDocument pdfDocument) {
 
         PdfPageBase page = pdfDocument.getPages().get(0);
         Rectangle2D[] options = {new Rectangle2D.Float(42f, 79.7f, 325.9f, 13.4f),
@@ -122,11 +122,11 @@ public class DataComponent {
         String courseName = extractText(page, options[0]);
         String[] courseIdGroup = splitByWord(extractText(page, options[1]));
         String lecturerName = extractText(page, options[2]);
-        String lecturerID = extractText(page, options[3]);
-        String hpUnit = extractText(page, options[4]);
+        String lecturerId = extractText(page, options[3]);
+        String hpUNIT = extractText(page, options[4]);
         String courseId = removeAllSpaces(courseIdGroup[0]);
-        String group = removeAllSpaces( courseIdGroup[1]);
+        String groupId = removeAllSpaces( courseIdGroup[1]);
 
-        return new PdfHeaders(courseName, courseId, group, lecturerName, lecturerID, hpUnit);
+        return new PdfHeadersDto(courseId, courseName, groupId, hpUNIT, lecturerId, lecturerName);
     }
 }

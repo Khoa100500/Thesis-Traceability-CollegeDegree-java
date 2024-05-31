@@ -7,7 +7,6 @@ function App() {
     return (
         <>
             <UserProvider>
-                {/* <Outlet /> */}
                 <Outlet />
                 <ToastContainer />
             </UserProvider>

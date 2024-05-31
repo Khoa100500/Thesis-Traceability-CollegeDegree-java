@@ -1,17 +1,15 @@
 package com.iupv.demo;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
+import com.iupv.demo.util.PdfDataService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/demo")
+@RequestMapping("/api/v1/auth")
+@RequiredArgsConstructor
 public class DemoRestController {
 
-    @GetMapping
-    public ResponseEntity<String> sayHello() {
-        return ResponseEntity.ok("Hello World!");
-    }
+    private final PdfDataService pdfDataService;
+
 }

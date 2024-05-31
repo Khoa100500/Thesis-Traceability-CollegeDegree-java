@@ -1,5 +1,6 @@
-package com.iupv.demo.report;
+package com.iupv.demo.score;
 
+import com.iupv.demo.report.Report;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,13 +34,13 @@ public class StudentScore {
     private String classId;
 
     @Column(name = "inclass")
-    private Byte inclass;
+    private Integer inclass;
 
     @Column(name = "midterm")
-    private Byte midterm;
+    private Integer midterm;
 
     @Column(name = "final")
-    private Byte finalField;
+    private Integer finalField;
 
     @Column(name = "description")
     private String description;

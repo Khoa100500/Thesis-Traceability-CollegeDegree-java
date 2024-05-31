@@ -34,24 +34,24 @@ CREATE TABLE signatures(
     validity_on_sign VARCHAR(55) NOT NULL,
     contact_info VARCHAR(255) NOT NULL,
 	digest_algorithm VARCHAR(255) NOT NULL,
-	encryptionAlgorithm VARCHAR(255) NOT NULL,
+	encryption_algorithm VARCHAR(255) NOT NULL,
 	field_on_page TINYINT NOT NULL,
 	filter_subtype VARCHAR(255),
 	integrity BOOLEAN NOT NULL,
 	is_annotations_allowed BOOLEAN NOT NULL,
 	is_fill_in_allowed BOOLEAN NOT NULL,
 	is_signature_invisible BOOLEAN NOT NULL,
-	isTimeStampVerified BOOLEAN NOT NULL,
+	is_time_stamp_verified BOOLEAN NOT NULL,
 	location VARCHAR(255) NOT NULL,
 	reason VARCHAR(255) NOT NULL,
 	revision VARCHAR(255) NOT NULL,
 	signature_covers_whole_document BOOLEAN NOT NULL,
 	signature_type VARCHAR(255) NOT NULL,
 	signed_on DATE NOT NULL,
-	signerAlternativeName VARCHAR(255) NOT NULL,
-	signerName VARCHAR(255) NOT NULL,
-	`timeStamp` VARCHAR(255) NOT NULL,
-	timeStampService VARCHAR(255) NOT NULL
+	signer_alternative_name VARCHAR(255) NOT NULL,
+	signer_name VARCHAR(255) NOT NULL,
+	`time_stamp` VARCHAR(255) NOT NULL,
+	time_stamp_service VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE report(
@@ -76,9 +76,9 @@ CREATE TABLE student_scores(
     student_name VARCHAR(255) NOT NULL,
     birthday DATE,
     class_id VARCHAR(20),
-    inclass TINYINT,
-    midterm TINYINT,
-    final TINYINT,
+    inclass INT,
+    midterm INT,
+    final INT,
     `description` VARCHAR(255),
     CONSTRAINT FK_SCORE_REPORT FOREIGN KEY(report_id) REFERENCES report(report_id)
 );

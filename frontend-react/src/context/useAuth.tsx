@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { UserProfile } from "../models/User";
-import { useNavigate, useNavigation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { loginAPI, registerAPI } from "../services/AuthService";
 import { toast } from "react-toastify";
 import React from "react";
@@ -52,6 +52,7 @@ export const UserProvider = ({ children }: Props) => {
                 if (res) {
                     localStorage.setItem("token", res?.data.token);
                     const userObj = {
+                        userID: res?.data.userID,
                         username: res?.data.username,
                         email: res?.data.email,
                     };
@@ -71,6 +72,7 @@ export const UserProvider = ({ children }: Props) => {
                 if (res) {
                     localStorage.setItem("token", res?.data.token);
                     const userObj = {
+                        userID: res?.data.userID,
                         username: res?.data.username,
                         email: res?.data.email,
                     };

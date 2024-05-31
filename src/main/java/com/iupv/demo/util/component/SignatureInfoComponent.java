@@ -21,7 +21,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.iupv.demo.util.Resources.dtos.SignatureInfo;
+import com.iupv.demo.signinfo.SignatureInfoDto;
 import lombok.AllArgsConstructor;
 import org.bouncycastle.asn1.tsp.TSTInfo;
 import org.springframework.stereotype.Component;
@@ -29,8 +29,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class SignatureInfoComponent {
 
-    private SignatureInfo inspectSignature(PdfDocument pdfDoc, SignatureUtil signUtil, PdfAcroForm form,
-                                           String name) {
+    private SignatureInfoDto inspectSignature(PdfDocument pdfDoc, SignatureUtil signUtil, PdfAcroForm form,
+                                              String name) {
         List<PdfWidgetAnnotation> widgets = form.getField(name).getWidgets();
         boolean isSignatureInvisible = false;
         int fieldOnPage = 0;
@@ -128,12 +128,29 @@ public class SignatureInfoComponent {
         boolean isFillInAllowed = perms.isFillInAllowed();
         boolean isAnnotationsAllowed = perms.isAnnotationsAllowed();
 
-        return new SignatureInfo(isSignatureInvisible, fieldOnPage, digestAlgorithm, encryptionAlgorithm, filterSubtype,
-                signerName, signerAlternativeName, signedOn,timeStamp, timeStampService, isTimeStampVerified, location,
-                reason, contactInfo, signatureType, isFillInAllowed, isAnnotationsAllowed, integrity, signatureCoversWholeDocument, revision);
+        return new SignatureInfoDto(contactInfo,
+                digestAlgorithm,
+                encryptionAlgorithm,
+                (byte) fieldOnPage,
+                filterSubtype,
+                integrity,
+                isAnnotationsAllowed,
+                isFillInAllowed,
+                isSignatureInvisible,
+                isTimeStampVerified,
+                location,
+                reason,
+                revision,
+                signatureCoversWholeDocument,
+                signatureType,
+                signedOn,
+                signerAlternativeName,
+                signerName,
+                timeStamp,
+                timeStampService);
     }
 
-    public SignatureInfo inspectSignatures(PdfReader pdfReader) {
+    public SignatureInfoDto inspectSignatures(PdfReader pdfReader) {
         PdfDocument pdfDoc = new PdfDocument(pdfReader);
         PdfAcroForm form = PdfAcroForm.getAcroForm(pdfDoc, false);
         SignatureUtil signUtil = new SignatureUtil(pdfDoc);
@@ -146,5 +163,5 @@ public class SignatureInfoComponent {
 @AllArgsConstructor
 class Result {
     SignaturePermissions signaturePermissions;
-    SignatureInfo signatureInfo;
+    SignatureInfoDto signatureInfoDto;
 }

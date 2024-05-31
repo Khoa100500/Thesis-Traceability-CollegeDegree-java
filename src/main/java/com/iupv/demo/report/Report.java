@@ -1,6 +1,8 @@
 package com.iupv.demo.report;
 
 import com.iupv.demo.User.User;
+import com.iupv.demo.score.StudentScore;
+import com.iupv.demo.signinfo.Signature;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,10 +24,6 @@ public class Report {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "sign_id", nullable = false)
-    private Signature sign;
 
     @Column(name = "course_id", nullable = false, length = 10)
     private String courseId;
@@ -50,5 +48,9 @@ public class Report {
 
     @OneToMany(mappedBy = "report")
     private Set<StudentScore> studentScores = new LinkedHashSet<>();
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "sign_id", nullable = false)
+    private Signature sign;
 
 }

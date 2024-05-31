@@ -1,8 +1,10 @@
-package com.iupv.demo.report;
+package com.iupv.demo.signinfo;
 
+import com.iupv.demo.report.Report;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
@@ -11,6 +13,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
+@ToString
 @Table(name = "signatures")
 public class Signature {
     @Id
@@ -45,7 +48,7 @@ public class Signature {
     @Column(name = "digest_algorithm", nullable = false)
     private String digestAlgorithm;
 
-    @Column(name = "encryptionAlgorithm", nullable = false)
+    @Column(name = "encryption_algorithm", nullable = false)
     private String encryptionAlgorithm;
 
     @Column(name = "field_on_page", nullable = false)
@@ -66,7 +69,7 @@ public class Signature {
     @Column(name = "is_signature_invisible", nullable = false)
     private Boolean isSignatureInvisible = false;
 
-    @Column(name = "isTimeStampVerified", nullable = false)
+    @Column(name = "is_time_stamp_verified", nullable = false)
     private Boolean isTimeStampVerified = false;
 
     @Column(name = "location", nullable = false)
@@ -87,19 +90,22 @@ public class Signature {
     @Column(name = "signed_on", nullable = false)
     private LocalDate signedOn;
 
-    @Column(name = "signerAlternativeName", nullable = false)
+    @Column(name = "signer_alternative_name", nullable = false)
     private String signerAlternativeName;
 
-    @Column(name = "signerName", nullable = false)
+    @Column(name = "signer_name", nullable = false)
     private String signerName;
 
-    @Column(name = "timeStamp", nullable = false)
+    @Column(name = "time_stamp", nullable = false)
     private String timeStamp;
 
-    @Column(name = "timeStampService", nullable = false)
+    @Column(name = "time_stamp_service", nullable = false)
     private String timeStampService;
 
     @OneToMany(mappedBy = "sign")
     private Set<Report> reports = new LinkedHashSet<>();
 
+    public void addReport(Report report) {
+        this.reports.add(report);
+    }
 }

@@ -4,7 +4,7 @@ import Mainpage from "../components/Pages/Mainpage";
 import App from "../App";
 import Notfound from "../components/Pages/Notfound";
 import RegisterPage from "../components/Pages/RegisterPage";
-// import ProtectedRoute from "./ProtectedRoute";
+import ProtectedRoute from "./ProtectedRoute";
 import Home from "../components/Pages/Home";
 import Report from "../components/Report";
 import WelcomPage from "../components/Pages/WelcomPage";
@@ -20,9 +20,9 @@ export const router = createBrowserRouter([
             {
                 path: "home",
                 element: (
-                    // <ProtectedRoute>
-                    <Mainpage />
-                    // </ProtectedRoute>
+                    <ProtectedRoute>
+                        <Mainpage />
+                    </ProtectedRoute>
                 ),
                 children: [
                     { path: "", element: <Home /> },

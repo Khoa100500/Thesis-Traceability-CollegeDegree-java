@@ -3,7 +3,7 @@ package com.iupv.demo.util.component;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.signatures.*;
-import com.iupv.demo.util.Resources.dtos.CertificateInfo;
+import com.iupv.demo.signinfo.CertificateInfoDto;
 import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.style.BCStyle;
@@ -109,7 +109,7 @@ public class CertificateComponent {
                 .validityOnSign(validityOnSign).validityNow(validityNow).build();
     }
 
-    private CertificateInfo verifySignature(SignatureUtil signUtil, String name) {
+    private CertificateInfoDto verifySignature(SignatureUtil signUtil, String name) {
         PdfPKCS7 pkcs7 = signUtil.readSignatureData(name);
         Certificate[] certs = pkcs7.getSignCertificateChain();
         boolean isVerifiedAgainstRoot = false;
@@ -145,11 +145,11 @@ public class CertificateComponent {
             System.out.println(e.getMessage());
         }
         assert c != null;
-        return new CertificateInfo(isVerifiedAgainstRoot, c.getIssuer(), c.getSubject(), c.getValidFrom(),
-                c.getValidTo(), c.getValidityOnSign(), c.getValidityNow());
+        return new CertificateInfoDto(isVerifiedAgainstRoot, c.getIssuer(), c.getSubject(), c.getValidFrom(),
+                c.getValidTo(), c.getValidityNow(), c.getValidityOnSign());
     }
 
-    public CertificateInfo verifySignatures(PdfReader pdfReader) {
+    public CertificateInfoDto verifySignatures(PdfReader pdfReader) {
         PdfDocument pdfDocument = new PdfDocument(pdfReader);
         SignatureUtil signUtil = new SignatureUtil(pdfDocument);
         List<String> names = signUtil.getSignatureNames();

@@ -1,7 +1,12 @@
 package com.iupv.demo.util.Resources.dtos;
 
-import java.util.List;
+import com.iupv.demo.report.PdfHeadersDto;
+import com.iupv.demo.score.StudentScoreDto;
+import com.iupv.demo.signinfo.CertificateInfoDto;
+import com.iupv.demo.signinfo.SignatureInfoDto;
 
-public record AllData(List<StudentScores> scores, PdfHeaders pdfHeaders,
-                      SignatureInfo signatureInfoList, CertificateInfo certificateInfo) {
+import java.util.Set;
+
+public record AllData(Set<StudentScoreDto> scores, PdfHeadersDto pdfHeadersDto,
+                      SignatureInfoDto signatureInfoDtoList, CertificateInfoDto certificateInfoDto) {
 }
