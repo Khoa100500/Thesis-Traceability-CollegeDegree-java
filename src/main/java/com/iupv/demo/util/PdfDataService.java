@@ -2,17 +2,13 @@ package com.iupv.demo.util;
 
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.iupv.demo.User.User;
-import com.iupv.demo.User.UserController;
 import com.iupv.demo.User.UserRepository;
 import com.iupv.demo.exception.InvalidSignatureException;
 import com.iupv.demo.report.*;
 import com.iupv.demo.score.StudentScore;
 import com.iupv.demo.score.StudentScoreMapper;
 import com.iupv.demo.score.StudentScoreRepository;
-import com.iupv.demo.signinfo.CertificateMapper;
-import com.iupv.demo.signinfo.Signature;
-import com.iupv.demo.signinfo.SignatureMapper;
-import com.iupv.demo.signinfo.SignatureRepository;
+import com.iupv.demo.signinfo.*;
 import com.iupv.demo.util.Resources.dtos.AllData;
 import com.iupv.demo.util.component.CertificateComponent;
 import com.iupv.demo.util.component.DataComponent;
@@ -26,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -64,16 +59,15 @@ public class PdfDataService {
         return allData;
     }
 
-    private boolean checkData(AllData allData) {
-        boolean isVerifiedAgainstRoot = allData.certificateInfoDto().isVerifiedAgainstRoot();
-        String signerEmail = allData.certificateInfoDto().subject();
+    private boolean checkData(CertificateInfoDto certificateInfoDto, PdfHeadersDto pdfHeadersDto) {
+        boolean isVerifiedAgainstRoot = certificateInfoDto.isVerifiedAgainstRoot();
+        String signerEmail = certificateInfoDto.subject();
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new NoSuchElementException("User not found at check"));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new NoSuchElementException("User not found at validation"));
         String userEmail = user.getEmail();
         String userFullname = user.getUserFullname();
-        String signerFullname = allData.pdfHeadersDto().lecturerName();
+        String signerFullname = pdfHeadersDto.lecturerName();
         return (userEmail.equals(signerEmail)) && isVerifiedAgainstRoot && (userFullname.equals(signerFullname));
-
     }
 
 
@@ -108,7 +102,7 @@ public class PdfDataService {
 
     public Integer uploadReport(Integer userID, MultipartFile file) {
         AllData allData = getAllPdfData(file);
-        if(!checkData(allData)) {
+        if(!checkData(allData.certificateInfoDto(), allData.pdfHeadersDto())) {
             throw new InvalidSignatureException("Invalid pdf information");
         } else {
             return PostReport(userID, allData);
