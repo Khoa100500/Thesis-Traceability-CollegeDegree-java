@@ -10,4 +10,8 @@ public interface ReportRepository extends JpaRepository<Report, Integer> {
     @Override
     @NonNull
     Optional<Report> findById(@NonNull Integer integer);
+
+    long countByUser_Id(Integer id);
+
+
 }
