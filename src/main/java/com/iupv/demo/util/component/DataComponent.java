@@ -16,7 +16,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;
 
-//"src/main/java/com/iupv/demo/util/Resources/KetQuaNhapDiem (18).pdf"
 @Component
 public class DataComponent {
 
@@ -30,7 +29,7 @@ public class DataComponent {
     }
 
     private String removeAllSpaces(String input) {
-        return input.replace(" ", "");
+        return input.replace("  +", " ");
     }
 
     private String removeExtraSpaces(String text) {

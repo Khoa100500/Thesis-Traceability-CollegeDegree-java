@@ -33,14 +33,4 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }
 
-
-    @PostMapping(value = "/pdf", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Integer> postReport(@RequestPart(value = "file") MultipartFile file) {
-        return ResponseEntity.ok(pdfDataService.uploadReport(1, file));
-    }
-
-    @GetMapping("/pdf/{id}")
-    public ResponseEntity<ReportDto> getReport(@PathVariable Integer id) {
-        return ResponseEntity.ok(pdfDataService.findReportById(id));
-    }
 }

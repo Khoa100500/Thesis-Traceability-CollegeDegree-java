@@ -15,7 +15,10 @@ import com.iupv.demo.util.component.DataComponent;
 import com.iupv.demo.util.component.SignatureInfoComponent;
 import com.spire.pdf.PdfDocument;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,18 +40,21 @@ public class PdfDataService {
     private final SignatureRepository signatureRepository;
     private final ReportRepository reportRepository;
     private final StudentScoreMapper studentScoreMapper;
-    private final ReportMapper reportMapper;
+    private final PdfHeaderMapper pdfHeaderMapper;
     private final CertificateMapper certificateMapper;
     private final SignatureMapper signatureMapper;
     private final StudentScoreRepository studentScoreRepository;
-    private final ReportMapper1 reportMapper1;
+
+    private Boolean checkExistSignature(Signature signature) {
+        return signatureRepository.existsBySubjectAndSignedOn(signature.getSubject(), signature.getSignedOn());
+    }
 
     private AllData getAllPdfData(MultipartFile file) {
         PdfReader signatureReader;
         PdfReader certificateReader;
         AllData allData = null;
         try {
-            PdfDocument pdfDocument = new PdfDocument(file.getInputStream());
+            PdfDocument pdfDocument = new PdfDocument(file.getBytes());
             signatureReader = new PdfReader(file.getInputStream());
             certificateReader = new PdfReader(file.getInputStream());
             allData = new AllData(p.extractStudentScores(pdfDocument), p.extractHeaders(pdfDocument),
@@ -60,20 +66,29 @@ public class PdfDataService {
     }
 
     private boolean checkData(CertificateInfoDto certificateInfoDto, PdfHeadersDto pdfHeadersDto) {
+        boolean result = true;
         boolean isVerifiedAgainstRoot = certificateInfoDto.isVerifiedAgainstRoot();
         String signerEmail = certificateInfoDto.subject();
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new NoSuchElementException("User not found at validation"));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new NoSuchElementException("User not found at pdf validation"));
         String userEmail = user.getEmail();
         String userFullname = user.getUserFullname();
-        String signerFullname = pdfHeadersDto.lecturerName();
-        return (userEmail.equals(signerEmail)) && isVerifiedAgainstRoot && (userFullname.equals(signerFullname));
+        String lecturerName = pdfHeadersDto.lecturerName();
+        if(!userEmail.equals(signerEmail)) {
+            throw new InvalidSignatureException("Invalid email");
+        }
+        if(!isVerifiedAgainstRoot) {
+            throw new InvalidSignatureException("Cannot verify against root");
+        }
+        if(!userFullname.equals(lecturerName)) {
+            throw new InvalidSignatureException("User and lecturer name does not match");
+        }
+        return result;
     }
 
 
-    private Integer PostReport(Integer userID, AllData allData) {
+    private Integer PostReport(String username, AllData allData) {
         Signature signature = new Signature();
-
         //Set StudentScores
         Set<StudentScore> studentScores = studentScoreMapper.toEntity(allData.scores());
 
@@ -82,16 +97,20 @@ public class PdfDataService {
         certificateMapper.partialUpdate(allData.certificateInfoDto(), signature);
 
         //Set Report
-        Report report = reportMapper.toEntity(allData.pdfHeadersDto());
+        Report report = pdfHeaderMapper.toEntity(allData.pdfHeadersDto());
 
         report.setStudentScores(studentScores);
         for(StudentScore studentScore : studentScores) {
             studentScore.setReport(report);
         }
-        signature.addReport(report);
+        if(!checkExistSignature(signature)) {
+            signature.addReport(report);
+        } else {
+            signature = signatureRepository.findBySubjectAndSignedOn(signature.getSubject(), signature.getSignedOn());
+        }
         report.setSign(signature);
         report.setTimePosted(Instant.now());
-        report.setUser(userRepository.findById(userID).orElseThrow(() -> new NoSuchElementException("User not found")));
+        report.setUser(userRepository.findByUsername(username).orElseThrow(() -> new NoSuchElementException("User not found")));
 
         signatureRepository.save(signature);
         reportRepository.save(report);
@@ -100,18 +119,12 @@ public class PdfDataService {
         return report.getId();
     }
 
-    public Integer uploadReport(Integer userID, MultipartFile file) {
+    public Integer uploadReport(String username, MultipartFile file) {
         AllData allData = getAllPdfData(file);
-        if(!checkData(allData.certificateInfoDto(), allData.pdfHeadersDto())) {
-            throw new InvalidSignatureException("Invalid pdf information");
+        if (checkData(allData.certificateInfoDto(), allData.pdfHeadersDto())) {
+            return PostReport(username, allData);
         } else {
-            return PostReport(userID, allData);
+            throw new InvalidSignatureException("Invalid pdf information");
         }
     }
-
-    public ReportDto findReportById(Integer reportId) {
-        Report report = reportRepository.findById(reportId).orElseThrow();
-        return reportMapper1.toDto(report);
-    }
-
 }

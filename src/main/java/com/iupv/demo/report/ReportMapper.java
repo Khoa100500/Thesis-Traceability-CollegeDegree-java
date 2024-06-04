@@ -4,10 +4,15 @@ import org.mapstruct.*;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ReportMapper {
-    Report toEntity(PdfHeadersDto pdfHeadersDto);
+    Report toEntity(ReportDto reportDto);
 
-    PdfHeadersDto toDto(Report report);
+    @AfterMapping
+    default void linkStudentScores(@MappingTarget Report report) {
+        report.getStudentScores().forEach(studentScore -> studentScore.setReport(report));
+    }
+
+    ReportDto toDto(Report report);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Report partialUpdate(PdfHeadersDto pdfHeadersDto, @MappingTarget Report report);
+    Report partialUpdate(ReportDto reportDto, @MappingTarget Report report);
 }

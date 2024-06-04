@@ -3,3 +3,7 @@
     color: white;
     cursor: pointer;
 }
+
+html * {
+    font-family: "Poppins", sans-serif;
+}

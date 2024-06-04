@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { loginAPI, registerAPI } from "../services/AuthService";
 import { toast } from "react-toastify";
 import React from "react";
-import axios from "axios";
+import instance from "../services/axios-instance";
 
 type UserContextType = {
     user: UserProfile | null;
@@ -36,7 +36,8 @@ export const UserProvider = ({ children }: Props) => {
         if (user && token) {
             setUser(JSON.parse(user));
             setToken(token);
-            axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+            instance.defaults.headers.common["Authorization"] =
+                "Bearer " + token;
         }
         setIsReady(true);
     }, []);
@@ -67,6 +68,7 @@ export const UserProvider = ({ children }: Props) => {
     };
 
     const loginUser = async (username: string, password: string) => {
+        localStorage.clear();
         await loginAPI(username, password)
             .then((res) => {
                 if (res) {

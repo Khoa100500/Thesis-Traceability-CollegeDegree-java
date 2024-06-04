@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.Instant;
 
 @Data
-public class InvalidSignatureError {
+public class ErrorResponse {
     Integer statusCode;
     String message;
     Instant timeStamp;

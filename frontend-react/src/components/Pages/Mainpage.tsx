@@ -1,7 +1,5 @@
 import { SetStateAction, useState } from "react";
-// import Home from "./Home";
 import Sidebar from "../Sidebar";
-// import Report from "../Report";
 import { Outlet, useOutletContext } from "react-router-dom";
 
 type ContextType = {
@@ -13,10 +11,10 @@ export default function Mainpage() {
     const [toggle, setToggle] = useState<boolean>(true);
 
     return (
-        <div className="container-fluid bg-secondary  min-vh-100">
+        <div className="container-fluid bg-white min-vh-100">
             <div className="row">
                 {toggle && (
-                    <div className="col-4 col-md-2 bg-white vh-100 text-truncate position-fixed">
+                    <div className="col-4 col-md-2 vh-100 text-truncate position-fixed shadow p-3 mb-5 bg-body">
                         <Sidebar />
                     </div>
                 )}

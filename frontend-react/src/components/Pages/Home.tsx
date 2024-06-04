@@ -1,39 +1,46 @@
-import axios from "axios";
 import Nav from "../Nav";
 import { useState } from "react";
-import { FormData } from "formdata-node";
 import { useMutation } from "@tanstack/react-query";
+import { handleUpload } from "../../services/UserServices";
+import ReportCard from "../ReportCard";
+import SimpleReportsTable from "../SimpleReportsTable";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import React from "react";
+
+export type ReportRequest = {
+    file: File | null;
+};
 
 export default function Home() {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const navigate = useNavigate();
+    const mutation = useMutation({
+        mutationFn: handleUpload,
+        onError(error) {
+            console.log(error);
+        },
+        onSuccess(data) {
+            navigate(`/home/report/${data.data}`);
+        },
+    });
+
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files) return;
         setSelectedFile(e.target.files[0]);
     };
 
-    const handleUpload = async (file: File | null) => {
-        const formData = new FormData();
-        formData.append("file", file);
-        // make a POST request to the File Upload API with the FormData object and Rapid API headers
-        return await axios.post("/api/v1/auth/pdf", formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-        });
-    };
-
-    const mutation = useMutation({ mutationFn: handleUpload });
     const onClick = () => {
-        mutation.mutate(selectedFile);
+        mutation.mutate({ file: selectedFile });
     };
 
     return (
-        <div className="px-3">
+        <div className="px-3 ">
             <Nav />
-            <div className="container-fluid">
+            <div className="container-fluid shadow p-3 mb-5 bg-body rounded">
                 <div className="row g-3 my-2">
-                    <div className="col-md-6 p-1">
-                        <div className="p-3 bg-white shaow-sm d-flex justify-content-around align-items-center rounded">
+                    <div className="col-md-4 p-4">
+                        <div className="p-3 bg-white d-flex justify-content-around align-items-center rounded">
                             <div className="input-group">
                                 <input
                                     type="file"
@@ -50,63 +57,19 @@ export default function Home() {
                                     id="inputGroupFileAddon04"
                                     onClick={onClick}
                                 >
-                                    Upload
+                                    Upload report
                                 </button>
                             </div>
                         </div>
                     </div>
-
-                    <div className="col-md-3 p-1">
-                        <div className="p-3 bg-white shaow-sm d-flex justify-content-around align-items-center rounded">
-                            <div>
-                                <h3 className="fs-2">2250</h3>
-                                <p className="fs-5">Deliveries</p>
-                            </div>
-                            <i className="bi bi-truck p-3 fs-1"></i>
-                        </div>
-                    </div>
-                    <div className="col-md-3 p-1">
-                        <div className="p-3 bg-white shaow-sm d-flex justify-content-around align-items-center rounded">
-                            <div>
-                                <h3 className="fs-2">20%</h3>
-                                <p className="fs-5">Increases</p>
-                            </div>
-                            <i className="bi bi-graph-up-arrow p-3 fs-1"></i>
+                    <div className="col-md-2 p-1 ">
+                        <div className="p-3 bg-white d-flex justify-content-around align-items-center bg-body">
+                            <ReportCard />
                         </div>
                     </div>
                 </div>
             </div>
-            <table className="table table-striped caption-top mt-2">
-                <caption className="text-white fs-4 ">List of reports</caption>
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">First</th>
-                        <th scope="col">Last</th>
-                        <th scope="col">Handle</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td>Larry</td>
-                        <td>The Bird</td>
-                        <td>@twitter</td>
-                    </tr>
-                </tbody>
-            </table>
+            <SimpleReportsTable />
         </div>
     );
 }
