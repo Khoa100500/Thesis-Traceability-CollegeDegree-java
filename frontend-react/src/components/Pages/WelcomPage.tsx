@@ -12,6 +12,10 @@ function WelcomPage() {
         navigate("/register");
     };
 
+    const handleGuest = () => {
+        navigate("/guest");
+    };
+
     return (
         <div className="vh-100 d-flex flex-column">
             {/* Navigation Bar */}
@@ -45,22 +49,16 @@ function WelcomPage() {
 
             {/* Main Content */}
             <div className="container d-flex flex-column justify-content-center align-items-center flex-grow-1">
-                <h1>Welcome to MyApp!</h1>
+                <h1>Welcome to MyApp</h1>
                 <p className="lead text-center mb-4">
                     Your one-stop solution for managing your classes and scores.
                 </p>
                 <div>
                     <button
                         className="btn btn-primary me-3"
-                        onClick={handleLogin}
+                        onClick={handleGuest}
                     >
-                        Login
-                    </button>
-                    <button
-                        className="btn btn-secondary"
-                        onClick={handleSignUp}
-                    >
-                        Sign Up
+                        Guest   
                     </button>
                 </div>
             </div>

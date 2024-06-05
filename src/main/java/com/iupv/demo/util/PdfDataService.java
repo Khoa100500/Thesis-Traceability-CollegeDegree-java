@@ -1,6 +1,7 @@
 package com.iupv.demo.util;
 
 import com.itextpdf.kernel.pdf.PdfReader;
+import com.iupv.demo.EmailSenderService;
 import com.iupv.demo.User.User;
 import com.iupv.demo.User.UserRepository;
 import com.iupv.demo.exception.InvalidSignatureException;
@@ -14,6 +15,7 @@ import com.iupv.demo.util.component.CertificateComponent;
 import com.iupv.demo.util.component.DataComponent;
 import com.iupv.demo.util.component.SignatureInfoComponent;
 import com.spire.pdf.PdfDocument;
+import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.security.core.Authentication;
@@ -44,6 +46,8 @@ public class PdfDataService {
     private final CertificateMapper certificateMapper;
     private final SignatureMapper signatureMapper;
     private final StudentScoreRepository studentScoreRepository;
+    private final EmailSenderService emailSenderService;
+    private final ReportMapper reportMapper;
 
     private Boolean checkExistSignature(Signature signature) {
         return signatureRepository.existsBySubjectAndSignedOn(signature.getSubject(), signature.getSignedOn());
@@ -87,7 +91,7 @@ public class PdfDataService {
     }
 
 
-    private Integer PostReport(String username, AllData allData) {
+    private Integer PostReport(String username, AllData allData, MultipartFile file) {
         Signature signature = new Signature();
         //Set StudentScores
         Set<StudentScore> studentScores = studentScoreMapper.toEntity(allData.scores());
@@ -111,10 +115,17 @@ public class PdfDataService {
         report.setSign(signature);
         report.setTimePosted(Instant.now());
         report.setUser(userRepository.findByUsername(username).orElseThrow(() -> new NoSuchElementException("User not found")));
-
         signatureRepository.save(signature);
         reportRepository.save(report);
         studentScoreRepository.saveAll(studentScores);
+
+        if(report.getId() != null) {
+            try {
+                emailSenderService.SendEmail(report.getSign().getSubject(), file, reportMapper.toDto(report));
+            } catch (MessagingException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         return report.getId();
     }
@@ -122,7 +133,7 @@ public class PdfDataService {
     public Integer uploadReport(String username, MultipartFile file) {
         AllData allData = getAllPdfData(file);
         if (checkData(allData.certificateInfoDto(), allData.pdfHeadersDto())) {
-            return PostReport(username, allData);
+            return PostReport(username, allData, file);
         } else {
             throw new InvalidSignatureException("Invalid pdf information");
         }

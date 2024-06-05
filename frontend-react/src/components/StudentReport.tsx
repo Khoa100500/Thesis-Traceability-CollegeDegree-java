@@ -1,8 +1,7 @@
 import { useParams } from "react-router-dom";
-import Nav from "./Nav";
 import Loading from "./Loading";
 import { toast } from "react-toastify";
-import { getReport } from "../services/UserServices";
+import { getStudentReport } from "../services/UserServices";
 import { useQuery } from "@tanstack/react-query";
 
 type studentScores = {
@@ -16,61 +15,12 @@ type studentScores = {
     description: string;
 };
 
-type user = {
-    userFullname: string;
-};
-
-type sign = {
-    isVerifiedAgainstRoot: boolean;
-    issuer: string;
-    subject: string;
-    validFrom: string;
-    validTo: string;
-    validityNow: string;
-    validityOnSign: string;
-    contactInfo: string;
-    digestAlgorithm: string;
-    encryptionAlgorithm: string;
-    fieldOnPage: number;
-    filterSubtype: string;
-    integrity: boolean;
-    isAnnotationsAllowed: boolean;
-    isFillInAllowed: boolean;
-    isSignatureInvisible: boolean;
-    isTimeStampVerified: boolean;
-    location: string;
-    reason: string;
-    revision: string;
-    signatureCoversWholeDocument: true;
-    signatureType: string;
-    signedOn: string;
-    signerAlternativeName: string;
-    signerName: string;
-    timeStamp: string;
-    timeStampService: string;
-};
-
-type Report = {
-    user: user;
-    courseId: string;
-    courseName: string;
-    groupId: string;
-    hpUNIT: string;
-    lecturerId: string;
-    lecturerName: string;
-    timePosted: string;
-    studentScores: studentScores[];
-    sign: sign;
-};
-
-export default function Report() {
+export default function StudentReport() {
     const { reportID } = useParams();
     const { data, isLoading, isError, error } = useQuery({
         queryKey: ["simple-reports", reportID],
-        queryFn: () => getReport(reportID!),
+        queryFn: () => getStudentReport(reportID!),
     });
-
-    const signData = data?.data.sign;
 
     if (isLoading) {
         return <Loading />;
@@ -82,7 +32,6 @@ export default function Report() {
 
     return (
         <>
-            <Nav />
             <div className="container-fluid">
                 <div className="row mb-4">
                     <div className="col-md-5">
@@ -117,18 +66,6 @@ export default function Report() {
                             </ul>
                         </div>
                     </div>
-                    <div className="col-md-5">
-                        <h2 className="text-black">Signer detail</h2>
-                        <div className="card p-3">
-                            <ul className="list-group">
-                                {Object.keys(signData).map((key, i) => (
-                                    <li key={i} className="list-group-item">
-                                        {key} : {signData[key] + ""}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div className="shadow p-3 mb-5 bg-body rounded">
@@ -140,14 +77,10 @@ export default function Report() {
                         <thead className="thead-light">
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Student ID</th>
-                                <th scope="col">Student name</th>
-                                <th scope="col">Birthday</th>
-                                <th scope="col">Class ID</th>
-                                <th scope="col">Inclass</th>
-                                <th scope="col">Midterm</th>
-                                <th scope="col">Final</th>
-                                <th scope="col">Description</th>
+                                <th scope="col">Course name</th>
+                                <th scope="col">Group</th>
+                                <th scope="col">Time Posted</th>
+                                <th scope="col">Detail</th>
                             </tr>
                         </thead>
                         <tbody>

@@ -39,6 +39,4 @@ public class UserController {
     public ResponseEntity<List<SimpleReportDto>> getReportList(@CurrentSecurityContext(expression = "authentication.name") String username) {
         return ResponseEntity.ok(reportService.getSimpleReportByUsername(username));
     }
-
-
 }

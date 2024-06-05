@@ -14,6 +14,14 @@ const getReport = async (reportID: string) => {
     return await instance.get(`/report/${reportID}`);
 };
 
+const getStudentReport = async (reportID: string) => {
+    return await instance.get(`/guest/report/${reportID}`);
+};
+
+const getStudentRecord = async (studentId: string) => {
+    return await instance.get(`/guest/simple-reports/${studentId}`);
+};
+
 const handleUpload = async (data: ReportRequest) => {
     const formData = new FormData();
     formData.append("file", data.file);
@@ -25,4 +33,11 @@ const handleUpload = async (data: ReportRequest) => {
     });
 };
 
-export { handleUpload, getUserReportCount, getUserSimpleReports, getReport };
+export {
+    handleUpload,
+    getUserReportCount,
+    getUserSimpleReports,
+    getReport,
+    getStudentRecord,
+    getStudentReport,
+};

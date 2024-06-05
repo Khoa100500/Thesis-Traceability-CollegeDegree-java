@@ -4,9 +4,9 @@ import { useMutation } from "@tanstack/react-query";
 import { handleUpload } from "../../services/UserServices";
 import ReportCard from "../ReportCard";
 import SimpleReportsTable from "../SimpleReportsTable";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import React from "react";
+import { toast } from "react-toastify";
 
 export type ReportRequest = {
     file: File | null;
@@ -21,6 +21,7 @@ export default function Home() {
             console.log(error);
         },
         onSuccess(data) {
+            toast.success("Report upload success");
             navigate(`/home/report/${data.data}`);
         },
     });

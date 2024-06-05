@@ -8,6 +8,8 @@ import ProtectedRoute from "./ProtectedRoute";
 import Home from "../components/Pages/Home";
 import Report from "../components/Report";
 import WelcomPage from "../components/Pages/WelcomPage";
+import GuestPage from "../components/Pages/GuestPage";
+import StudentReport from "../components/StudentReport";
 
 export const router = createBrowserRouter([
     {
@@ -15,6 +17,11 @@ export const router = createBrowserRouter([
         element: <App />,
         children: [
             { path: "", element: <WelcomPage /> },
+            {
+                path: "guest",
+                element: <GuestPage />,
+            },
+            { path: "report/:reportID", element: <StudentReport /> },
             { path: "login", element: <LoginPage /> },
             { path: "register", element: <RegisterPage /> },
             {

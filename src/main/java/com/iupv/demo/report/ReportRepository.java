@@ -13,12 +13,15 @@ public interface ReportRepository extends JpaRepository<Report, Integer> {
     @NonNull
     Optional<Report> findById(@NonNull Integer integer);
 
-    @Query("select r from Report r JOIN FETCH r.user where r.id = ?1 ")
-    Optional<Report> findWithId(Integer id);
+    List<Report> findByUser_UsernameOrderByTimePostedDesc(String username);
 
 
     long countByUser_Id(Integer id);
     long countByUser_Username(String username);
     List<Report> findByUser_Id(Integer id);
     List<Report> findByUser_Username(String username);
+
+    List<Report> findByStudentScores_StudentId(String studentId);
+
+
 }

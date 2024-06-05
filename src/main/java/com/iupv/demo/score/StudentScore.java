@@ -17,7 +17,7 @@ public class StudentScore {
     @Column(name = "student_score_id", nullable = false)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "report_id", nullable = false)
     private Report report;
 

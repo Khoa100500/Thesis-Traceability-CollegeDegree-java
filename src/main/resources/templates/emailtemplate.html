@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="">
+<head>
+    <meta charset="UTF-8">
+    <title>Successful Student Scores Reports Upload</title>
+</head>
+<body style="background-color: #f8f9fa; padding: 20px;">
+<div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 0.375rem; box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);">
+    <div style="background-color: #007bff; color: #ffffff; padding: 10px; border-radius: 0.375rem 0.375rem 0 0;">
+        <h2 style="margin: 0;">Student Scores Reports Upload Successful</h2>
+    </div>
+    <div style="padding: 20px;">
+        <p>Dear <span th:text="${recipientName}">Recipient Name</span>,</p>
+        <p>We are pleased to inform you that the student scores report has been successfully uploaded. Below are the details:</p>
+
+        <table style="width: 100%; border-collapse: collapse; margin-top: 16px;">
+            <thead style="background-color: #f8f9fa;">
+            <tr>
+                <th style="border: 1px solid #dee2e6; padding: 8px;">#</th>
+                <th style="border: 1px solid #dee2e6; padding: 8px;">Course Name</th>
+                <th style="border: 1px solid #dee2e6; padding: 8px;">Group</th>
+                <th style="border: 1px solid #dee2e6; padding: 8px;">Time Posted</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td style="border: 1px solid #dee2e6; padding: 8px;">1</td>
+                <td style="border: 1px solid #dee2e6; padding: 8px;" th:text="${courseName}"></td>
+                <td style="border: 1px solid #dee2e6; padding: 8px;" th:text="${groupId}"></td>
+                <td style="border: 1px solid #dee2e6; padding: 8px;" th:text="${timePosted}"></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <p style="margin-top: 16px;">You can view the detailed report by logging into the system. If you have any questions or need further assistance, please do not hesitate to contact us.</p>
+
+        <p>Thank you,</p>
+        <p><strong>EduTracer</strong></p>
+        <p><a href="mailto:pdangkhoa445@gmail.com" style="color: #007bff; text-decoration: none;">pdangkhoa445@gmail.com</a></p>
+    </div>
+    <div style="background-color: #f8f9fa; padding: 10px; border-radius: 0 0 0.375rem 0.375rem; text-align: center; color: #6c757d;">
+        &copy; 2024 EduTracer. All rights reserved.
+    </div>
+</div>
+</body>
+</html>

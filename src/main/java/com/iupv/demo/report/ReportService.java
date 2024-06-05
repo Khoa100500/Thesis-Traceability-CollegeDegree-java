@@ -23,7 +23,11 @@ public class ReportService {
     private final PdfDataService pdfDataService;
 
     public List<SimpleReportDto> getSimpleReportByUsername(String username) {
-        return simpleReportMapper.toDto(reportRepository.findByUser_Username(username));
+        return simpleReportMapper.toDto(reportRepository.findByUser_UsernameOrderByTimePostedDesc(username));
+    }
+
+    public List<SimpleReportDto> getSimpleReportByStudentId(String studentId) {
+        return simpleReportMapper.toDto(reportRepository.findByStudentScores_StudentId(studentId));
     }
 
     public Long getReportCountByUsername(String username) {
@@ -38,4 +42,6 @@ public class ReportService {
     public Integer createReportByUsername(String username, MultipartFile file) {
         return pdfDataService.uploadReport(username, file);
     }
+
+
 }

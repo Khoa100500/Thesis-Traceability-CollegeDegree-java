@@ -51,7 +51,7 @@ export default function SimpleReportsTable() {
                                     <td>{report.timePosted}</td>
                                     <td>
                                         <Link
-                                            to="/home/report"
+                                            to={`/home/report/${report.id}`}
                                             className="text-info"
                                         >
                                             See Details
