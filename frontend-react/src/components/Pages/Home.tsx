@@ -4,7 +4,6 @@ import { useMutation } from "@tanstack/react-query";
 import { handleUpload } from "../../services/UserServices";
 import ReportCard from "../ReportCard";
 import SimpleReportsTable from "../SimpleReportsTable";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import React from "react";
 
