@@ -22,6 +22,10 @@ const getStudentRecord = async (studentId: string) => {
     return await instance.get(`/guest/simple-reports/${studentId}`);
 };
 
+const getStudentRecords = async (studentId: string) => {
+    return await instance.get(`/guest/records/${studentId}`);
+};
+
 const handleUpload = async (data: ReportRequest) => {
     const formData = new FormData();
     formData.append("file", data.file);
@@ -40,4 +44,5 @@ export {
     getReport,
     getStudentRecord,
     getStudentReport,
+    getStudentRecords
 };

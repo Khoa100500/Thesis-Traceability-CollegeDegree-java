@@ -10,6 +10,7 @@ import Report from "../components/Report";
 import WelcomPage from "../components/Pages/WelcomPage";
 import GuestPage from "../components/Pages/GuestPage";
 import StudentReport from "../components/StudentReport";
+import StudentRecords from "../components/Pages/StudentRecords";
 
 export const router = createBrowserRouter([
     {
@@ -21,6 +22,7 @@ export const router = createBrowserRouter([
                 path: "guest",
                 element: <GuestPage />,
             },
+            { path: "records/:studentID", element: <StudentRecords /> },
             { path: "report/:reportID", element: <StudentReport /> },
             { path: "login", element: <LoginPage /> },
             { path: "register", element: <RegisterPage /> },

@@ -1,27 +1,13 @@
 import React, { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getStudentRecord } from "../../services/UserServices";
-import { Link } from "react-router-dom";
-
-interface Report {
-    id: number;
-    courseName: string;
-    groupId: string;
-    timePosted: string;
-}
+import { useNavigate } from "react-router-dom";
 
 const GuestPage = () => {
     const [studentId, setStudentId] = useState<string>("");
-
-    const { isError, isLoading, refetch, data, error } = useQuery({
-        queryKey: ["student-records", studentId],
-        queryFn: () => getStudentRecord(studentId),
-        enabled: false,
-    });
+    const navigate = useNavigate();
 
     const handleSearch = async (e: React.FormEvent) => {
         e.preventDefault();
-        refetch();
+        navigate(`/records/${studentId}`);
     };
 
     return (
@@ -44,55 +30,10 @@ const GuestPage = () => {
                                 required
                             />
                         </div>
-                        <button
-                            type="submit"
-                            className="btn btn-primary"
-                            disabled={isLoading}
-                        >
-                            {isLoading ? "Loading..." : "Search"}
+                        <button type="submit" className="btn btn-primary">
+                            Search
                         </button>
                     </form>
-                    {isError && (
-                        <div className="alert alert-danger mt-4">
-                            {error.message}
-                        </div>
-                    )}
-                </div>
-            </div>
-            <div className="shadow p-3 mt-5 mb-5 bg-body rounded">
-                <div className="card-body p-4">
-                    <table className="table table-hover  caption-top">
-                        <caption className="text-dark fs-4">
-                            List of reports
-                        </caption>
-                        <thead className="thead-light">
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Course name</th>
-                                <th scope="col">Group</th>
-                                <th scope="col">Time Posted</th>
-                                <th scope="col">Detail</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {data?.data.map((report: Report, index: number) => (
-                                <tr key={index + 1}>
-                                    <th scope="row">{index + 1}</th>
-                                    <td>{report.courseName}</td>
-                                    <td>{report.groupId}</td>
-                                    <td>{report.timePosted}</td>
-                                    <td>
-                                        <Link
-                                            to={`/report/${report.id}`}
-                                            className="text-info"
-                                        >
-                                            See Details
-                                        </Link>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>

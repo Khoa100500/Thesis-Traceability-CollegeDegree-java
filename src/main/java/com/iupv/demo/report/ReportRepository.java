@@ -15,6 +15,8 @@ public interface ReportRepository extends JpaRepository<Report, Integer> {
 
     List<Report> findByUser_UsernameOrderByTimePostedDesc(String username);
 
+    List<Report> findByStudentScores_StudentIdOrderByTimePostedDesc(String studentId);
+
 
     long countByUser_Id(Integer id);
     long countByUser_Username(String username);
@@ -22,6 +24,4 @@ public interface ReportRepository extends JpaRepository<Report, Integer> {
     List<Report> findByUser_Username(String username);
 
     List<Report> findByStudentScores_StudentId(String studentId);
-
-
 }

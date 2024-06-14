@@ -17,8 +17,8 @@ export default function Home() {
     const navigate = useNavigate();
     const mutation = useMutation({
         mutationFn: handleUpload,
-        onError(error) {
-            console.log(error);
+        onError() {
+            toast.error("Invalid input");
         },
         onSuccess(data) {
             toast.success("Report upload success");

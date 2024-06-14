@@ -1,8 +1,8 @@
 package com.iupv.demo;
 
-import com.iupv.demo.report.ReportDto;
-import com.iupv.demo.report.ReportService;
-import com.iupv.demo.report.SimpleReportDto;
+import com.iupv.demo.report.*;
+import com.iupv.demo.score.StudentScore;
+import com.iupv.demo.score.StudentScoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Set;
 
 
 @RestController
@@ -19,6 +20,8 @@ import java.util.List;
 public class GuestController {
 
     private final ReportService reportService;
+    private final ReportRepository reportRepository;
+    private final StudentScoreRepository studentScoreRepository;
 
     @GetMapping("/simple-reports/{id}")
     public ResponseEntity<List<SimpleReportDto>> getReportList(@PathVariable  String id) {
@@ -28,5 +31,10 @@ public class GuestController {
     @GetMapping("/report/{id}")
     public ResponseEntity<ReportDto> getReport(@PathVariable Integer id) {
         return ResponseEntity.ok(reportService.getReportByID(id));
+    }
+
+    @GetMapping("/records/{id}")
+    public ResponseEntity<List<StudentRecordDto>> getPdfHeadersList(@PathVariable String id) {
+        return ResponseEntity.ok(reportService.getReportByStudentID(id));
     }
 }
