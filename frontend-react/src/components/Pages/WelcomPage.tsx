@@ -22,7 +22,7 @@ function WelcomPage() {
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <div className="container-fluid">
                     <Link to="/home" className="navbar-brand">
-                        MyApp
+                        EduTrace
                     </Link>
                     <div className="collapse navbar-collapse">
                         <ul className="navbar-nav ms-auto mb-2 mb-lg-0">

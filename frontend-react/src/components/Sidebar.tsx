@@ -9,7 +9,7 @@ export default function Sidebar() {
             <div className="m-2">
                 <Link to="/home" style={{ textDecoration: "none" }}>
                     <i className="bi bi-bootstrap-fill me-3 fs-4"></i>
-                    <span className="brand-name fs-4">IUPV</span>
+                    <span className="brand-name fs-4">EduTrace</span>
                 </Link>
             </div>
             <hr className="text-dark" />

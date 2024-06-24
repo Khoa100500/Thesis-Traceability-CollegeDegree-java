@@ -86,7 +86,7 @@ export default function Report() {
             <div className="container-fluid">
                 <div className="row mb-4">
                     <div className="col-md-5">
-                        <h2 className="text-black">Signer detail</h2>
+                        <h2 className="text-black">Signer and class detail</h2>
                         <div className="card p-3">
                             <ul className="list-group">
                                 <li className="list-group-item">
@@ -118,7 +118,7 @@ export default function Report() {
                         </div>
                     </div>
                     <div className="col-md-5">
-                        <h2 className="text-black">Signer detail</h2>
+                        <h2 className="text-black">Signer signature detail</h2>
                         <div className="card p-3">
                             <ul className="list-group">
                                 {Object.keys(signData).map((key, i) => (

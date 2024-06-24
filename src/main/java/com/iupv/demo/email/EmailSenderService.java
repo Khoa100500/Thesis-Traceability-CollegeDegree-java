@@ -1,9 +1,11 @@
-package com.iupv.demo;
+package com.iupv.demo.email;
 
 import com.iupv.demo.report.ReportDto;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -12,16 +14,19 @@ import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
+import java.io.File;
 import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class EmailSenderService {
 
+    private static final Logger log = LoggerFactory.getLogger(EmailSenderService.class);
     private final JavaMailSender mailSender;
     private final SpringTemplateEngine templateEngine;
 
     public void SendEmail(String to, MultipartFile file, ReportDto report) throws MessagingException {
+        Logger logger = LoggerFactory.getLogger(EmailSenderService.class);
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
 
@@ -34,13 +39,13 @@ public class EmailSenderService {
         String text = templateEngine.process("emailtemplate", context);
 
         mimeMessageHelper.setPriority(1);
-        mimeMessageHelper.setFrom("pdangkhoa445@gmail.com");
+        mimeMessageHelper.setFrom("IU-EduTrace");
         mimeMessageHelper.setTo(to);
         mimeMessageHelper.setSubject("Student Scores Report Upload Successful");
         mimeMessageHelper.setText(text, true);
-        mimeMessageHelper.addAttachment(Objects.requireNonNull(file.getOriginalFilename()), file);
+        mimeMessageHelper.addAttachment(report.courseName() + "_" + report.courseId() + "_Group" + report.groupId(), file);
 
         mailSender.send(mimeMessage);
-
+        logger.info("Student Scores Report Upload Successful");
     }
 }

@@ -1,7 +1,7 @@
 package com.iupv.demo.util;
 
 import com.itextpdf.kernel.pdf.PdfReader;
-import com.iupv.demo.EmailSenderService;
+import com.iupv.demo.email.EmailSenderService;
 import com.iupv.demo.User.User;
 import com.iupv.demo.User.UserRepository;
 import com.iupv.demo.exception.InvalidSignatureException;
@@ -17,10 +17,8 @@ import com.iupv.demo.util.component.SignatureInfoComponent;
 import com.spire.pdf.PdfDocument;
 import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
-import lombok.NonNull;
-import org.springframework.security.core.Authentication;
+import lombok.SneakyThrows;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +27,7 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.logging.Logger;
 
 @Service
 @AllArgsConstructor
@@ -70,27 +69,51 @@ public class PdfDataService {
     }
 
     private boolean checkData(CertificateInfoDto certificateInfoDto, PdfHeadersDto pdfHeadersDto) {
-        boolean result = true;
-        boolean isVerifiedAgainstRoot = certificateInfoDto.isVerifiedAgainstRoot();
         String signerEmail = certificateInfoDto.subject();
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new NoSuchElementException("User not found at pdf validation"));
+        boolean isVerifiedAgainstRoot = certificateInfoDto.isVerifiedAgainstRoot();
+        String lecturerName = pdfHeadersDto.lecturerName();
+
+        String username = getAuthenticatedUsername();
+        User user = findUserByUsername(username);
         String userEmail = user.getEmail();
         String userFullname = user.getUserFullname();
-        String lecturerName = pdfHeadersDto.lecturerName();
-        if(!userEmail.equals(signerEmail)) {
+
+        validateEmail(signerEmail, userEmail);
+        validateVerificationAgainstRoot(isVerifiedAgainstRoot);
+        validateUserAndLecturerName(userFullname, lecturerName);
+
+        return true;
+    }
+
+    private String getAuthenticatedUsername() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+    private User findUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new NoSuchElementException("User not found at pdf validation"));
+    }
+
+    private void validateEmail(String signerEmail, String userEmail) {
+        if (!userEmail.equals(signerEmail)) {
             throw new InvalidSignatureException("Invalid email");
         }
-        if(!isVerifiedAgainstRoot) {
+    }
+
+    private void validateVerificationAgainstRoot(boolean isVerifiedAgainstRoot) {
+        if (!isVerifiedAgainstRoot) {
             throw new InvalidSignatureException("Cannot verify against root");
         }
-        if(!userFullname.equals(lecturerName)) {
+    }
+
+    private void validateUserAndLecturerName(String userFullname, String lecturerName) {
+        if (!userFullname.equals(lecturerName)) {
             throw new InvalidSignatureException("User and lecturer name does not match");
         }
-        return result;
     }
 
 
+    @SneakyThrows
     private Integer PostReport(String username, AllData allData, MultipartFile file) {
         Signature signature = new Signature();
         //Set StudentScores
@@ -120,11 +143,7 @@ public class PdfDataService {
         studentScoreRepository.saveAll(studentScores);
 
         if(report.getId() != null) {
-            try {
                 emailSenderService.SendEmail(report.getSign().getSubject(), file, reportMapper.toDto(report));
-            } catch (MessagingException e) {
-                throw new RuntimeException(e);
-            }
         }
 
         return report.getId();

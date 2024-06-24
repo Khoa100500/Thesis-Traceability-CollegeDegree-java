@@ -22,7 +22,7 @@ type Report = {
 
 const StudentRecords: React.FC = () => {
     const { studentID } = useParams();
-    const { isError, isLoading, data, error } = useQuery({
+    const { isError, isSuccess, isLoading  , data, error } = useQuery({
         queryKey: ["student-records", studentID],
         queryFn: () => getStudentRecords(studentID!),
     });
@@ -34,40 +34,41 @@ const StudentRecords: React.FC = () => {
     }
 
     return (
-        <div className="container mt-5">
-            <h1 className="text-center mb-4">Student Record</h1>
-            {isLoading && <div className="text-center">Loading...</div>}
-            {isError && (
-                <div className="alert alert-danger text-center">
-                    {error.message}
-                </div>
-            )}
-            {reports?.map((report, index) => (
-                <div className="card mb-4" key={index}>
-                    <div className="card-header bg-primary text-white">
-                        <h2 className="h5">{report.courseName}</h2>
+        <div>
+            <div className="container mt-5">
+                <h1 className="text-center mb-4">Student Record</h1>
+                {isLoading && <div className="text-center">Loading...</div>}
+                {isError && (
+                    <div className="alert alert-danger text-center">
+                        {error.message}
                     </div>
-                    <div className="card-body">
-                        <ul className="list-group list-group-flush">
-                            <li className="list-group-item">
-                                <span className="fw-bold">Course ID : </span>
-                                {report.courseId}
-                            </li>
-                            <li className="list-group-item">
-                                <span className="fw-bold">Lecturer : </span>
-                                {report.lecturerName}
-                            </li>
-                            <li className="list-group-item">
-                                <span className="fw-bold">Lecturer ID : </span>
-                                {report.lecturerId}
-                            </li>
-                            <li className="list-group-item">
-                                <span className="fw-bold">Time posted : </span>
-                                {report.timePosted}
-                            </li>
-                        </ul>
-                        <table className="table table-bordered table-hover mt-3">
-                            <thead className="thead-light">
+                )}
+                {isSuccess && reports?.map((report, index) => (
+                    <div className="card mb-4" key={index}>
+                        <div className="card-header bg-primary text-white">
+                            <h2 className="h5">{report.courseName}</h2>
+                        </div>
+                        <div className="card-body">
+                            <ul className="list-group list-group-flush">
+                                <li className="list-group-item">
+                                    <span className="fw-bold">Course ID : </span>
+                                    {report.courseId}
+                                </li>
+                                <li className="list-group-item">
+                                    <span className="fw-bold">Lecturer : </span>
+                                    {report.lecturerName}
+                                </li>
+                                <li className="list-group-item">
+                                    <span className="fw-bold">Lecturer ID : </span>
+                                    {report.lecturerId}
+                                </li>
+                                <li className="list-group-item">
+                                    <span className="fw-bold">Time posted : </span>
+                                    {report.timePosted}
+                                </li>
+                            </ul>
+                            <table className="table table-bordered table-hover mt-3">
+                                <thead className="thead-light">
                                 <tr>
                                     <th scope="col">Name</th>
                                     <th scope="col">Class</th>
@@ -76,8 +77,8 @@ const StudentRecords: React.FC = () => {
                                     <th scope="col">Final</th>
                                     <th scope="col">Description</th>
                                 </tr>
-                            </thead>
-                            <tbody>
+                                </thead>
+                                <tbody>
                                 <tr>
                                     <td>
                                         {report.studentScores[0].studentName}
@@ -92,11 +93,12 @@ const StudentRecords: React.FC = () => {
                                         {report.studentScores[0].description}
                                     </td>
                                 </tr>
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
-            ))}
+                ))}
+            </div>
         </div>
     );
 };
