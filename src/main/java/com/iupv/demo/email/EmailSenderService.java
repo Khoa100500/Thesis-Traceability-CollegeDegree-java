@@ -18,6 +18,7 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class EmailSenderService {
+
     private final JavaMailSender mailSender;
     private final SpringTemplateEngine templateEngine;
 
