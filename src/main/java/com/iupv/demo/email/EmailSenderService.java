@@ -8,20 +8,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
-import java.io.File;
 import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class EmailSenderService {
-
-    private static final Logger log = LoggerFactory.getLogger(EmailSenderService.class);
     private final JavaMailSender mailSender;
     private final SpringTemplateEngine templateEngine;
 
@@ -43,7 +39,7 @@ public class EmailSenderService {
         mimeMessageHelper.setTo(to);
         mimeMessageHelper.setSubject("Student Scores Report Upload Successful");
         mimeMessageHelper.setText(text, true);
-        mimeMessageHelper.addAttachment(report.courseName() + "_" + report.courseId() + "_Group" + report.groupId(), file);
+        mimeMessageHelper.addAttachment(Objects.requireNonNull(file.getOriginalFilename()), file);
 
         mailSender.send(mimeMessage);
         logger.info("Student Scores Report Upload Successful");
