@@ -1,5 +1,5 @@
-<h1>
-    <img src="images/logo-vector-IU-01.png" alt="HCMIU Logo"/>
+<h1 align="center">
+    <img src="images/logo-vector-IU-01.png" alt="HCMIU Logo" width="200"/>
     <p style="text-align:center">BUILDING A SYSTEM FOR TRACING PROVENANCE OF
 EDUCATIONAL CERTIFICATES
 </p>
