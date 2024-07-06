@@ -1,4 +1,3 @@
-
 CREATE SCHEMA `student_tracker`;
 USE student_tracker;
 
@@ -83,8 +82,9 @@ CREATE TABLE student_scores(
     CONSTRAINT FK_SCORE_REPORT FOREIGN KEY(report_id) REFERENCES report(report_id)
 );
 
-
-
+CREATE USER 'user'@'localhost' IDENTIFIED BY '123456';
+GRANT ALL PRIVILEGES ON student_tracker.* TO 'user'@'localhost';
+FLUSH PRIVILEGES;
 
 INSERT INTO `student_tracker`.`roles` (`role_id`, `role_name`) VALUES ('1', 'USER');
 INSERT INTO `student_tracker`.`roles` (`role_id`, `role_name`) VALUES ('2', 'ADMIN');
