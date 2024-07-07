@@ -42,8 +42,16 @@ PLease run the `student_tracker.sql` script to create student_tracker schema
 
 ### Spring Boot backend
 
+Run maven wrapper if Maven has not been install on your machine
+
 ```bash
 ./mvnw spring-boot:run
+```
+
+or else run:
+
+```bash
+mvn spring-boot:run
 ```
 
 ### Run React frontend
