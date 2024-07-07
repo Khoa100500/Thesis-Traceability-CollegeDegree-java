@@ -5,6 +5,17 @@ EDUCATIONAL CERTIFICATES
 </p>
 </h1>
 
+-   [Prerequisites](#prerequisites)
+-   [Setup project](#setup-project)
+    -   [Clone the repository](#clone-the-repository)
+    -   [MySQL Server](#mysql-server)
+    -   [Spring Boot backend](#spring-boot-backend)
+    -   [Run React frontend](#run-react-frontend)
+        -   [Navigate to frontend-react sub folder](#navigate-to-frontend-react-sub-folder)
+        -   [Install all npm packages](#install-all-npm-packages)
+        -   [Start the application on local host](#start-the-application-on-local-host)
+-   [Setup account](#setup-account)
+
 ## Prerequisites
 
 -   Java 22
