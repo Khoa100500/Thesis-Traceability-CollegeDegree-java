@@ -1,8 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/useAuth";
 
 export default function Sidebar() {
     const { logout } = useAuth();
+    const navigate = useNavigate();
 
     return (
         <div className="bg-white p-2 ">
@@ -18,9 +19,12 @@ export default function Sidebar() {
                     <i className="bi bi-clipboard-data fs-5 me-3"></i>
                     <span>Report</span>
                 </a>
-                <a className="list-group-item py-2">
-                    <i className="bi bi-people fs-5 me-3"></i>
-                    <span>Students</span>
+                <a
+                    className="list-group-item py-2"
+                    onClick={() => navigate("/home/search")}
+                >
+                    <i className="bi bi-search fs-5 me-3"></i>
+                    <span>Student</span>
                 </a>
                 <a className="list-group-item py-2" onClick={logout}>
                     <i className="bi bi-power fs-5 me-3"></i>

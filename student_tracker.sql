@@ -88,3 +88,6 @@ FLUSH PRIVILEGES;
 
 INSERT INTO `student_tracker`.`roles` (`role_id`, `role_name`) VALUES ('1', 'USER');
 INSERT INTO `student_tracker`.`roles` (`role_id`, `role_name`) VALUES ('2', 'ADMIN');
+
+INSERT INTO `student_tracker`.`users` (`user_id`, `username`, `user_fullname`, `email`, `user_password`) VALUES ('2', 'admin', 'Pham Dang Khoa', 'phamdangkhoa10051@gmail.com', '$2a$12$Hz/9lT86Q.90xmW/YVVVee.Q8P9RKw./JFrRUQB1smqi0G.Jl9uui');
+INSERT INTO `student_tracker`.`user_role` (`user_id`, `role_id`) VALUES ('2', '2');

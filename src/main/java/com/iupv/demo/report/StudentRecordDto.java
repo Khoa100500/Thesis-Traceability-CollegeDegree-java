@@ -7,7 +7,7 @@ import java.util.Set;
 /**
  * DTO for {@link Report}
  */
-public record StudentRecordDto(String courseId, String courseName, String lecturerId, String lecturerName,
+public record StudentRecordDto(Integer id, String courseId, String courseName, String lecturerId, String lecturerName,
                                Instant timePosted, Set<StudentScoreDto> studentScores) implements Serializable {
     /**
      * DTO for {@link com.iupv.demo.score.StudentScore}

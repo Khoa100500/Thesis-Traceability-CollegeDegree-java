@@ -5,6 +5,8 @@ import { loginAPI, registerAPI } from "../services/AuthService";
 import { toast } from "react-toastify";
 import React from "react";
 import instance from "../services/axios-instance";
+import { QueryClient } from "@tanstack/react-query";
+import { queryClient } from "../main";
 
 type UserContextType = {
     user: UserProfile | null;
@@ -97,6 +99,7 @@ export const UserProvider = ({ children }: Props) => {
         localStorage.removeItem("user");
         setUser(null);
         setToken("");
+        queryClient.removeQueries();
         navigate("/login");
     };
 

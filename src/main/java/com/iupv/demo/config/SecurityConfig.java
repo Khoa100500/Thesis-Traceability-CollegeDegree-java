@@ -28,8 +28,8 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/api/v1/auth/**").permitAll();
-                    auth.requestMatchers("/api/v1/guest/**").permitAll();
-                    auth.requestMatchers("/api/v1/user/**").hasRole("USER");
+                    auth.requestMatchers("/api/v1/guest/**").hasRole("ADMIN");
+                    auth.requestMatchers("/api/v1/user/**").hasAnyRole("ADMIN", "USER");
                     auth.anyRequest().authenticated();
                 })
 

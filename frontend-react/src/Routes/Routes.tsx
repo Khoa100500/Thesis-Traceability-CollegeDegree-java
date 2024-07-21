@@ -18,11 +18,6 @@ export const router = createBrowserRouter([
         element: <App />,
         children: [
             { path: "", element: <WelcomPage /> },
-            {
-                path: "guest",
-                element: <GuestPage />,
-            },
-            { path: "records/:studentID", element: <StudentRecords /> },
             { path: "report/:reportID", element: <StudentReport /> },
             { path: "login", element: <LoginPage /> },
             { path: "register", element: <RegisterPage /> },
@@ -35,6 +30,11 @@ export const router = createBrowserRouter([
                 ),
                 children: [
                     { path: "", element: <Home /> },
+                    {
+                        path: "search",
+                        element: <GuestPage />,
+                    },
+                    { path: "records/:studentID", element: <StudentRecords /> },
                     { path: "report/:reportID", element: <Report /> },
                 ],
             },

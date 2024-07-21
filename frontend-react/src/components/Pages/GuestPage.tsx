@@ -7,7 +7,7 @@ const GuestPage = () => {
 
     const handleSearch = async (e: React.FormEvent) => {
         e.preventDefault();
-        navigate(`/records/${studentId}`);
+        navigate(`/home/records/${studentId}`);
     };
 
     return (
