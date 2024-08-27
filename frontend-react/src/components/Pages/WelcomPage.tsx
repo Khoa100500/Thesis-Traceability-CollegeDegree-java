@@ -13,7 +13,7 @@ function WelcomPage() {
     };
 
     const handleGuest = () => {
-        navigate("/guest");
+        navigate("/home");
     };
 
     return (
@@ -49,7 +49,7 @@ function WelcomPage() {
 
             {/* Main Content */}
             <div className="container d-flex flex-column justify-content-center align-items-center flex-grow-1">
-                <h1>Welcome to MyApp</h1>
+                <h1>Welcome to EduTrace</h1>
                 <p className="lead text-center mb-4">
                     Your one-stop solution for managing your classes and scores.
                 </p>
@@ -58,7 +58,7 @@ function WelcomPage() {
                         className="btn btn-primary me-3"
                         onClick={handleGuest}
                     >
-                        Guest   
+                        Go to HomePage
                     </button>
                 </div>
             </div>
